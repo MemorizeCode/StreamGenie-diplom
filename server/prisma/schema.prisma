@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int          @id @default(autoincrement())
+  login     String       @unique
+  password  String
+  uniqLogin String?
+  email     String?
+  ipAdr     String?
+  country   String?
+  city      String?
+  browser   String?
+  premium   Boolean      @default(false)
+  delete    Boolean      @default(false)
+  bans      Boolean      @default(false)
+  post      Post[]
+  likes     LikePost[]
+  coment    ComentPost[]
+  mypodpiski     Subcribe[]   @relation("subId")
+  myfolowers       Subcribe[]   @relation("userId")
+}
+
+model Subcribe {
+  id     Int   @id @default(autoincrement())
+  user   User? @relation("userId", fields: [userId], references: [id])
+  userId Int
+  sub    User  @relation("subId", fields: [subId], references: [id])
+  subId  Int
+}
+
+model Post {
+  id          Int          @id @default(autoincrement())
+  title       String?
+  text        String?
+  countLikes  Boolean      @default(false)
+  countComent Boolean      @default(false)
+  countWatch  Int          @default(0)
+  imgAvatar   String?
+  user        User         @relation(fields: [userId], references: [id])
+  userId      Int
+  likes       LikePost[]
+  coment      ComentPost[]
+}
+
+model LikePost {
+  id     Int  @id @default(autoincrement())
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+  post   Post @relation(fields: [postId], references: [id])
+  postId Int
+}
+
+model ComentPost {
+  id     Int     @id @default(autoincrement())
+  user   User    @relation(fields: [userId], references: [id])
+  userId Int
+  post   Post    @relation(fields: [postId], references: [id])
+  postId Int
+  delete Boolean @default(false)
+}
