@@ -11,30 +11,39 @@ datasource db {
 }
 
 model User {
-  id        Int          @id @default(autoincrement())
-  login     String       @unique
-  password  String
-  uniqLogin String?
-  email     String?
-  ipAdr     String?
-  country   String?
-  city      String?
-  browser   String?
-  premium   Boolean      @default(false)
-  delete    Boolean      @default(false)
-  bans      Boolean      @default(false)
-  post      Post[]
-  likes     LikePost[]
-  coment    ComentPost[]
-  mypodpiski     Subcribe[]   @relation("subId")
-  myfolowers       Subcribe[]   @relation("userId")
+  id            Int          @id @default(autoincrement())
+  login         String       @unique
+  password      String
+  uniqLogin     String?
+  email         String?
+  ipAdr         String?
+  country       String?
+  city          String?
+  browser       String?
+  role          Roles        @default(USER)
+  countPost     Int          @default(0)
+  countVideo    Int          @default(0)
+  countWatch    Int          @default(0)
+  countSubs     Int          @default(0)
+  countMySubs   Int          @default(0)
+  isOnline      Boolean      @default(false)
+  onlineLast    String?
+  premium       Boolean      @default(false)
+  premiumAction String?
+  delete        Boolean      @default(false)
+  bans          Boolean      @default(false)
+  post          Post[]
+  likes         LikePost[]
+  coment        ComentPost[]
+  mypodpiski    Subcribe[]   @relation("subId")
+  myfolowers    Subcribe[]   @relation("userId")
 }
 
 model Subcribe {
-  id     Int   @id @default(autoincrement())
-  user   User? @relation("userId", fields: [userId], references: [id])
+  id     Int  @id @default(autoincrement())
+  user   User @relation("userId", fields: [userId], references: [id])
   userId Int
-  sub    User  @relation("subId", fields: [subId], references: [id])
+  sub    User @relation("subId", fields: [subId], references: [id])
   subId  Int
 }
 
@@ -48,15 +57,16 @@ model Post {
   imgAvatar   String?
   user        User         @relation(fields: [userId], references: [id])
   userId      Int
+  delete      Boolean      @default(false)
   likes       LikePost[]
   coment      ComentPost[]
 }
 
 model LikePost {
-  id     Int  @id @default(autoincrement())
-  user   User @relation(fields: [userId], references: [id])
+  id     Int   @id @default(autoincrement())
+  user   User? @relation(fields: [userId], references: [id])
   userId Int
-  post   Post @relation(fields: [postId], references: [id])
+  post   Post? @relation(fields: [postId], references: [id])
   postId Int
 }
 
@@ -66,5 +76,12 @@ model ComentPost {
   userId Int
   post   Post    @relation(fields: [postId], references: [id])
   postId Int
+  text   String?
   delete Boolean @default(false)
+}
+
+enum Roles {
+  USER
+  ADMIN
+  MODERATOR
 }
