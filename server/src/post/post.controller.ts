@@ -6,9 +6,9 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post('/getposts')
-  async getposts(@Req() param) {
-    let {id} = param.body
-    let post = this.postService.getposts(Number(id))
+  async getposts(@Req() req) {
+    let {userId} = req.body
+    let post = this.postService.getposts(Number(userId))
     return post
   }
 
@@ -20,35 +20,48 @@ export class PostController {
 
   @Post("/setlike")
   async setlike(@Req() req){
-    let {userId,postId} = req.body
+    let {postId} = req.body
+    let userId = req.user
     return this.postService.setlike(Number(userId),Number(postId))
   }
 
   
   @Post("/setcoment")
   async setcoment(@Req() req){
-    let {userId,postId,text} = req.body
+    let {postId,text} = req.body
+    let userId = req.user
     return this.postService.setcoment(Number(userId),Number(postId),text)
   }
-
+ 
   @Post("/deletecoment")
   async deletecoment(@Req() req){
-    let {userId,postId} = req.body
-    return this.postService.deletecoment(Number(userId),Number(postId))
+    let {postId,idComent} = req.body
+    let userId = req.user
+    return this.postService.deletecoment(Number(userId),Number(postId),Number(idComent))
   }
 
 
   @Post("/createpost")
   async createpost(@Req() req){
-    let {text,title,userId} = req.body
+    let {text,title} = req.body
+    let userId = req.user
     let post = this.postService.create(text,title,userId)
     return post
   }
 
   @Post("/editpost")
   async editpost(@Req() req){
-    let {text,title,userId,postId} = req.body
+    let {text,title,postId} = req.body
+    let userId = req.user
     let post = this.postService.edit(text,title,Number(userId),Number(postId))
+    return post
+  }
+
+  @Post("/deletepost")
+  async deletepost(@Req() req){
+    let {postId} = req.body
+    let userId = req.user
+    let post = this.postService.deletepost(Number(userId),Number(postId))
     return post
   }
 }

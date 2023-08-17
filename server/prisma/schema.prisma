@@ -10,35 +10,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//MY USER
 model User {
-  id            Int          @id @default(autoincrement())
-  login         String       @unique
-  password      String
-  uniqLogin     String?
-  email         String?
-  ipAdr         String?
-  country       String?
-  city          String?
-  browser       String?
-  role          Roles        @default(USER)
-  countPost     Int          @default(0)
-  countVideo    Int          @default(0)
-  countWatch    Int          @default(0)
-  countSubs     Int          @default(0)
-  countMySubs   Int          @default(0)
-  isOnline      Boolean      @default(false)
-  onlineLast    String?
-  premium       Boolean      @default(false)
-  premiumAction String?
-  delete        Boolean      @default(false)
-  bans          Boolean      @default(false)
-  post          Post[]
-  likes         LikePost[]
-  coment        ComentPost[]
-  mypodpiski    Subcribe[]   @relation("subId")
-  myfolowers    Subcribe[]   @relation("userId")
+  id          Int           @id @default(autoincrement())
+  login       String        @unique
+  password    String
+  uniqLogin   String?
+  channelName String?
+  email       String?
+  ipAdr       String?
+  country     String?
+  city        String?
+  browser     String?
+  role        Roles         @default(USER)
+  countPost   Int           @default(0)
+  countVideo  Int           @default(0)
+  countWatch  Int           @default(0)
+  countSubs   Int           @default(0)
+  countMySubs Int           @default(0)
+  isOnline    Boolean       @default(false)
+  premium     Boolean       @default(false)
+  delete      Boolean       @default(false)
+  bans        Boolean       @default(false)
+  post        Post[]
+  likes       LikePost[]
+  coment      ComentPost[]
+  mypodpiski  Subcribe[]    @relation("subId")
+  myfolowers  Subcribe[]    @relation("userId")
+  Video       Video[]
+  videoL      LikeVideo[]
+  videoC      ComentVideo[]
+  files       Files[]
 }
 
+//MY Subcribe / SUBS
 model Subcribe {
   id     Int  @id @default(autoincrement())
   user   User @relation("userId", fields: [userId], references: [id])
@@ -47,6 +52,7 @@ model Subcribe {
   subId  Int
 }
 
+//POST
 model Post {
   id          Int          @id @default(autoincrement())
   title       String?
@@ -62,14 +68,17 @@ model Post {
   coment      ComentPost[]
 }
 
+//LIKE POST
 model LikePost {
-  id     Int   @id @default(autoincrement())
-  user   User? @relation(fields: [userId], references: [id])
+  id     Int     @id @default(autoincrement())
+  user   User?   @relation(fields: [userId], references: [id])
   userId Int
-  post   Post? @relation(fields: [postId], references: [id])
+  post   Post?   @relation(fields: [postId], references: [id])
   postId Int
+  delete Boolean @default(false)
 }
 
+//COMETN POST
 model ComentPost {
   id     Int     @id @default(autoincrement())
   user   User    @relation(fields: [userId], references: [id])
@@ -78,6 +87,55 @@ model ComentPost {
   postId Int
   text   String?
   delete Boolean @default(false)
+}
+
+//VIDEO
+model Video {
+  id          Int           @id @default(autoincrement())
+  title       String?
+  text        String?
+  countLikes  Boolean       @default(false)
+  countComent Boolean       @default(false)
+  countWatch  Int           @default(0)
+  imgAvatar   String?
+  user        User          @relation(fields: [userId], references: [id])
+  userId      Int
+  delete      Boolean       @default(false)
+  likes       LikeVideo[]
+  cometns     ComentVideo[]
+}
+
+//VIDEO LIKE
+model LikeVideo {
+  id      Int     @id @default(autoincrement())
+  user    User?   @relation(fields: [userId], references: [id])
+  userId  Int
+  video   Video?  @relation(fields: [videoId], references: [id])
+  videoId Int
+  delete  Boolean @default(false)
+}
+
+//VIDEO COMENT
+model ComentVideo {
+  id      Int     @id @default(autoincrement())
+  user    User    @relation(fields: [userId], references: [id])
+  userId  Int
+  video   Video   @relation(fields: [videoId], references: [id])
+  videoId Int
+  text    String?
+  delete  Boolean @default(false)
+}
+
+//FILES
+model Files {
+  id       Int     @id @default(autoincrement())
+  user     User    @relation(fields: [userId], references: [id])
+  userId   Int     @unique
+  title    String?
+  srcFiles String?
+  dataFile String?
+  sizeFile String?
+  typeFile String?
 }
 
 enum Roles {
