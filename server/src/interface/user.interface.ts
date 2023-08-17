@@ -4,3 +4,4 @@ export interface userMessage {
     jwt?:string
     jwtRef?:string
 }
+//Эти поля должны быть в ответе, но не все обязательные\

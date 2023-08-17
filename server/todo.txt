@@ -1,0 +1,49 @@
+- User
+
+-- Login
+-- Register
+-- Get profile (auth)
+-- Get profile id
+-- Get Subscriptions (auth)
+-- Get Subscribers (auth)
+
+
+- Post
+
+-- Get post
+-- Get post id
+-- SetLike/DeleteLike post (auth)
+-- SetComent/DeleteComent post (auth)
+-- Create post (auth)
+-- Edit post (auth)
+-- Delete post (auth)
+
+
+- Video
+
+-- Get Video
+-- Get Video id
+-- SetLike/DeleteLike Video (auth)
+-- SetComent/DeleteComent Video (auth)
+-- Create Video (auth)
+-- Edit Video (auth)
+-- Delete Video (auth)
+
+- File
+
+-- Get MY Files (auth)
+-- Create Files (auth)
+-- Upload Files (auth)
+-- Edit Files (auth)
+-- Delete Files (auth)
+
+
+- Premium functions
+
+-- Block user
+-- Music
+-- uniqLogin from 1 char
+-- Profile icon
+-- Profile description up to 500 characters
+-- the ability to upload GIFs to the avatar
+--
