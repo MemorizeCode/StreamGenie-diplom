@@ -28,13 +28,13 @@ export class UsersController {
   @Post('/register')
   async register(@Body() UserDTO: UserDTO): Promise<userMessage> {
     let { login, password, repeatPass } = UserDTO;
-    const result = this.userService.register(login, password);
+    const result = this.userService.register(login, password,repeatPass);
     return result;
   }
   //Получение на кого я подписан
   @Post('/mysubs')
   async mysub(@Body() UserSubDTO:UserSubDTO): Promise<userMessage>  {
-    let {userId} =UserSubDTO
+    let {userId} = UserSubDTO
     let result = this.userService.mysubs(userId);
     return result;
   }
@@ -46,16 +46,11 @@ export class UsersController {
     let result = this.userService.mysubcribe(subId);
     return result;
   }
-
   @Post('/profile')
-  async profile(@Body() UserDTO, @Headers('x-api-key') apikey:string): Promise<userMessage>  {
-    if (apikey != "KEY") {
-        throw new HttpException("Доступ запрещен", 403)
-    } else {
-      let { id } = UserDTO
-      let result = this.userService.profile(Number(id));
-      return result;
-    }
+  async profile(@Req() req): Promise<userMessage>  {
+      let userId = req.user
+      let result = this.userService.profile(Number(userId));
+      return result; 
   }
 
   @Get('/profile/:id')

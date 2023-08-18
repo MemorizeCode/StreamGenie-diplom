@@ -28,7 +28,13 @@ import { AuthMiddleware } from './middleware/auth.middleware';
 export class AppModule implements NestModule{
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthMiddleware).forRoutes(
-      {path:"/api/post/setlike", method:RequestMethod.ALL}
+      {path:"/api/post/setlike", method:RequestMethod.ALL},
+      {path:"/api/post/setcoment", method:RequestMethod.ALL},
+      {path:"/api/post/deletecoment", method:RequestMethod.ALL},
+      {path:"/api/post/createpost", method:RequestMethod.ALL},
+      {path:"/api/post/editpost", method:RequestMethod.ALL},
+      {path:"/api/post/deletepost", method:RequestMethod.ALL},
+      {path:"/api/users/profile", method:RequestMethod.ALL},
     )
   }
 }

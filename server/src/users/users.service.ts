@@ -38,7 +38,16 @@ export class UsersService {
   }
 
   //Register
-  async register(login: string, password: string): Promise<userMessage> {
+  async register(login: string, password: string,repeatpass:string): Promise<userMessage> {
+    if(login.length <=3  || login.length > 10){
+      return {message:"Логин должен быть больше 3 и меньше 11 симоволов "}
+    }
+    if(password.length <=5  || password.length > 16){
+      return {message:"Пароль должен быть больше 5 и меньше 16 симоволов "}
+    }
+    if(password != repeatpass){
+      return {message:"Пароли не совпадают"}
+    }
     const user = await this.prisma.user.findUnique({
       where: {
         login: login,
@@ -52,15 +61,15 @@ export class UsersService {
       let county = '';
       let city = '';
       let provider = '';
-      let ipcon = await axios
-        .post('https://ipapi.co/json/')
-        .then((response) => {
-          ipAdr = response.data.ip;
-          county = response.data.country_name;
-          city = response.data.city;
-          provider = response.data.org;
-          console.log(response.data);
-        });
+      // let ipcon = await axios
+      //   .post('https://ipapi.co/json/')
+      //   .then((response) => {
+      //     ipAdr = response.data.ip;
+      //     county = response.data.country_name;
+      //     city = response.data.city;
+      //     provider = response.data.org;
+      //     console.log(response.data);
+      //   });
       const newUser = await this.prisma.user.create({
         data: {
           login: login,
