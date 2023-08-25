@@ -18,46 +18,58 @@ import { UserSubDTO } from 'src/dto/userSubs.dto';
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
-  @Post('/login')
-  async login(@Body() UserDTO: UserDTO): Promise<userMessage> {
-    const { login, password } = UserDTO;
-    const result = this.userService.login(login, password);
-    return result;
-  }
-
-  @Post('/register')
-  async register(@Body() UserDTO: UserDTO): Promise<userMessage> {
-    let { login, password, repeatPass } = UserDTO;
-    const result = this.userService.register(login, password,repeatPass);
-    return result;
-  }
   //Получение на кого я подписан
   @Post('/mysubs')
-  async mysub(@Body() UserSubDTO:UserSubDTO): Promise<userMessage>  {
-    let {userId} = UserSubDTO
+  async mysub(@Body() UserSubDTO: UserSubDTO): Promise<userMessage> {
+    let { userId } = UserSubDTO;
     let result = this.userService.mysubs(userId);
     return result;
   }
 
   //Получение кто на меня подписан
   @Post('/mysubscribe')
-  async mysubcribe(@Body() UserSubDTO:UserSubDTO): Promise<userMessage>  {
-    let { subId } = UserSubDTO
+  async mysubcribe(@Body() UserSubDTO: UserSubDTO): Promise<any> {
+    let { subId } = UserSubDTO;
     let result = this.userService.mysubcribe(subId);
     return result;
   }
+
+  @Post("/banuser")
+  async banuser(@Body() UserSubDTO:UserSubDTO,@Req() req):Promise<any>{
+    let {userId} = UserSubDTO;
+    let myId = req.user
+    let result = this.userService.banuser(userId,Number(myId.id))
+    return result
+  }
+
+  @Post("/unbanuser")
+  async unbanuser(@Body() UserSubDTO:UserSubDTO, @Req() req):Promise<any>{
+    let {userId} = UserSubDTO;
+    let myId = req.user
+    let result = this.userService.unbanuser(userId,Number(myId.id))
+    return result
+  }
+
+  @Post("/getMyBansUser")
+  async getMyBan(@Req() req):Promise<any>{
+    let userId = req.user
+    let result = this.userService.listban(userId.id)
+    return result
+  }
+
+  
+
   @Post('/profile')
-  async profile(@Req() req): Promise<userMessage>  {
-      let userId = req.user
-      let result = this.userService.profile(Number(userId));
-      return result; 
+  async profile(@Req() req): Promise<any> {
+    let userId = req.user;
+    let result = this.userService.profile(Number(userId.id));
+    return result;
   }
 
   @Get('/profile/:id')
-  async neMoyProfile(@Param() param): Promise<userMessage>  {
+  async neMoyProfile(@Param() param): Promise<userMessage> {
     let { id } = param;
     let result = this.userService.profilehyjoi(Number(id));
     return result;
   }
 }
-

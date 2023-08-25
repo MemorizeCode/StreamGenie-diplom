@@ -11,104 +11,41 @@ export class UsersService {
     private readonly prisma: PrismaService,
     private jwtService: JwtService,
   ) {}
-  //Login
-  async login(login: string, password: string): Promise<userMessage> {
-    let user = await this.prisma.user.findUnique({
-      where: {
-        login: login,
-      },
-    });
-    if (user) {
-      let hash = await bcrypt.compare(password, user.password);
-      if (!hash) {
-        return {message:"Пароль не правильный"}
-      } else {
-        let userData = {
-          id: user.id,
-          login: user.login,
-          role: user.role,
-          premium: user.premium,
-        };
-        let newUser = await this.jwtService.sign(userData);
-        return { message: 'Вы вошли', jwt: newUser };
-      }
-    } else {
-      return {message:"Логин не найден"}
-    }
-  }
-
-  //Register
-  async register(login: string, password: string,repeatpass:string): Promise<userMessage> {
-    if(login.length <=3  || login.length > 10){
-      return {message:"Логин должен быть больше 3 и меньше 11 симоволов "}
-    }
-    if(password.length <=5  || password.length > 16){
-      return {message:"Пароль должен быть больше 5 и меньше 16 симоволов "}
-    }
-    if(password != repeatpass){
-      return {message:"Пароли не совпадают"}
-    }
-    const user = await this.prisma.user.findUnique({
-      where: {
-        login: login,
-      },
-    });
-    if (user) {
-      return { message: 'Логин уже существует' };
-    } else {
-      let hashPassword = await bcrypt.hash(password, 4);
-      let ipAdr = '';
-      let county = '';
-      let city = '';
-      let provider = '';
-      // let ipcon = await axios
-      //   .post('https://ipapi.co/json/')
-      //   .then((response) => {
-      //     ipAdr = response.data.ip;
-      //     county = response.data.country_name;
-      //     city = response.data.city;
-      //     provider = response.data.org;
-      //     console.log(response.data);
-      //   });
-      const newUser = await this.prisma.user.create({
-        data: {
-          login: login,
-          password: hashPassword,
-          uniqLogin: new generateUniqueLogin().generate(),
-          ipAdr: ipAdr,
-          country: county,
-          city: city,
-          browser: provider,
-        },
-      });
-      return { message: 'Вы создали аккаунт', obj: newUser };
-    }
-  }
   //Получение на кого я подписан
-  async mysubs(id: number):Promise<userMessage> {
-    const user = await this.prisma.user.findMany({
-      where: {
-        mypodpiski: {
-          some: {
-            userId: id,
-          },
-        },
-      },
-    });
-    return {obj:user}
+  async mysubs(id: number):Promise<any> {
+    let subs = await this.prisma.user.findMany({
+      where:{
+        mypodpiski:{
+          some:{
+            userId:id
+          }
+        }
+      }
+    })
+    if(subs.length < 1){
+      return "Пользователь не найден"
+    }
+    else{
+      return subs
+    }
   }
   //Получение кто на меня подписан
-  async mysubcribe(id: number):Promise<userMessage> {
-    const user = await this.prisma.user.findMany({
-      where: {
-        myfolowers: {
-          some: {
-            subId: id,
-          },
-        },
-      },
-    });
-    return {obj:user}
+  async mysubcribe(id: number):Promise<any> {
+    let podpishki = await this.prisma.user.findMany({
+      where:{
+        myfolowers:{
+          some:{
+            subId:id
+          }
+        }
+      }
+    })
+    if(podpishki.length < 1){
+      return "Пользователь не найден"
+    }
+    else{
+      return podpishki
+    }
   }
 
   //My profile
@@ -142,6 +79,59 @@ export class UsersService {
       },
     });
     return {obj:result}
-
   }
+
+  async banuser(userId,myId):Promise<any>{
+    let userIsBan = await this.prisma.bans.findMany({
+      where:{
+        userBanId:userId
+      }
+    })
+    if(userIsBan.length > 0){
+      return "Он уже забанен"
+    }
+    else{
+      let banUser = await this.prisma.bans.create({
+        data:{
+          userBanId:userId,
+          userId:myId
+        }
+      })
+      return banUser
+    }
+  }
+
+  async unbanuser(userId,myId):Promise<any>{
+    let userIsBan = await this.prisma.bans.findMany({
+      where:{
+        userBanId:userId
+      }
+    })
+    if(userIsBan.length <= 0){
+      return "Он не забанен"
+    }
+    else{
+      let unBanUser = await this.prisma.bans.deleteMany({
+        where:{
+          userBanId:userId,
+          userId:myId
+        }
+      })
+      return unBanUser
+    }
+  }
+
+  async listban(id){
+    let list = await this.prisma.user.findMany({
+      where:{
+        myBanUser:{
+          some:{
+            userId:id
+          }
+        }
+      }
+    })
+    return list
+  }
+
 }
