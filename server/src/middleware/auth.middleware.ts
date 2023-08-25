@@ -16,7 +16,7 @@ export class AuthMiddleware implements NestMiddleware {
     const token = authHeader.split(' ')[1];
     try {
       const decoded = this.jwtService.verify(token);
-      req.user = decoded.id
+      req.user = decoded
       next();
     } catch (err) {
         return res.status(401).json({ message: 'Не авторизован | Нет доступа' });

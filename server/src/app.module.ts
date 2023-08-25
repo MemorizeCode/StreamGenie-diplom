@@ -13,6 +13,9 @@ import { FilesService } from './files/files.service';
 import { VideoController } from './video/video.controller';
 import { VideoService } from './video/video.service';
 import { AuthMiddleware } from './middleware/auth.middleware';
+import { AdminMiddleware } from './middleware/admin.middleware';
+import { AuthService } from './auth/auth.service';
+import { AuthController } from './auth/auth.controller';
 
 @Module({
   imports: [
@@ -22,8 +25,8 @@ import { AuthMiddleware } from './middleware/auth.middleware';
       signOptions: { expiresIn: '1h' },
     }),
   ],
-  controllers: [AppController, UsersController, PostController, FilesController, VideoController],
-  providers: [AppService, UsersService, PrismaService, PostService, FilesService, VideoService],
+  controllers: [AppController, UsersController, PostController, FilesController, VideoController,AuthController],
+  providers: [AppService, UsersService, PrismaService, PostService, FilesService, VideoService,AuthService],
 })
 export class AppModule implements NestModule{
   configure(consumer: MiddlewareConsumer) {
@@ -35,6 +38,9 @@ export class AppModule implements NestModule{
       {path:"/api/post/editpost", method:RequestMethod.ALL},
       {path:"/api/post/deletepost", method:RequestMethod.ALL},
       {path:"/api/users/profile", method:RequestMethod.ALL},
+      {path:"/api/users/banuser", method:RequestMethod.ALL},
+      {path:"/api/users/unbanuser", method:RequestMethod.ALL},
+      {path:"/api/users/getMyBansUser", method:RequestMethod.ALL},
     )
   }
 }

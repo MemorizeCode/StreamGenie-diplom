@@ -2,10 +2,10 @@
 
 -- Login
 -- Register
--- Get profile (auth)
+-- Get profile 
 -- Get profile id
--- Get Subscriptions (auth)
--- Get Subscribers (auth)
+-- Get Subscriptions 
+-- Get Subscribers 
 
 
 - Post
