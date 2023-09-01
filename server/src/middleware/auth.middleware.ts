@@ -5,21 +5,18 @@ import { Request, Response, NextFunction } from 'express';
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
   constructor(private readonly jwtService: JwtService) {}
-
-  async use(req: Request, res: Response, next: NextFunction) {
-    const authHeader = req.headers.authorization;
-    
-    if (!authHeader) {
-      return res.status(401).json({ message: 'Не авторизован | Нет доступа' });
+  async use(req: any, res: any, next: (error?: any) => void) {
+    let header = req.headers.authorization;
+    if (!header) {
+      res.status(401).send({ message: 'Header not' });
     }
-
-    const token = authHeader.split(' ')[1];
+    const token = header.split(' ')[1];
     try {
-      const decoded = this.jwtService.verify(token);
-      req.user = decoded
+      const decode = await this.jwtService.verify(token);
+      req.body = decode;
       next();
     } catch (err) {
-        return res.status(401).json({ message: 'Не авторизован | Нет доступа' });
+      return res.status(401).send({ message: 'Неверный токен' });
     }
   }
 }

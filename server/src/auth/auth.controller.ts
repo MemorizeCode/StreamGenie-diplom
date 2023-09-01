@@ -6,6 +6,11 @@ import { UserDTO } from '../dto/user.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Post("/test")
+  async test(){
+    return "Hello"
+  }
+
   @Post('/login')
   async login(@Body() UserDTO: UserDTO): Promise<any> {
     const { login, password } = UserDTO;
