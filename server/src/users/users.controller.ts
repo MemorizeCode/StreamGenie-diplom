@@ -7,12 +7,15 @@ import {
   Param,
   Post,
   Req,
+  UseGuards
 } from '@nestjs/common';
+
 import { UsersService } from './users.service';
 import { Request } from 'express';
 import { userMessage } from 'src/interface/user.interface';
 import { UserDTO } from '../dto/user.dto';
 import { UserSubDTO } from 'src/dto/userSubs.dto';
+
 
 @Controller('/api/users')
 export class UsersController {
@@ -57,12 +60,12 @@ export class UsersController {
     return result
   }
 
-  
 
   @Post('/profile')
   async profile(@Req() req): Promise<any> {
-    let userId = req.user;
-    let result = this.userService.profile(Number(userId.id));
+    let user = req.body;
+    let userId = user.id
+    let result = this.userService.profile(Number(userId));
     return result;
   }
 
