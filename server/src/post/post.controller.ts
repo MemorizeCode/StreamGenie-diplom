@@ -8,60 +8,66 @@ export class PostController {
   @Post('/getposts')
   async getposts(@Req() req) {
     let {userId} = req.body
-    let post = this.postService.getposts(Number(userId))
+    let post = this.postService.getAllPostUser(userId)
     return post
   }
 
   @Get("/getpost/:id")
   async getpost(@Param() param){
     let {id} = param
-    return this.postService.getpost(Number(id))
+    return this.postService.getCurrentPost(Number(id))
   }
 
   @Post("/setlike")
   async setlike(@Req() req){
     let {postId} = req.body
-    let userId = req.user
-    return this.postService.setlike(Number(userId.id),Number(postId))
+    let user = req.user
+    let userId = user.id
+    return this.postService.setLikePost(userId,postId)
   }
 
   
   @Post("/setcoment")
   async setcoment(@Req() req){
     let {postId,text} = req.body
-    let userId = req.user
-    return this.postService.setcoment(Number(userId.id),Number(postId),text)
+    let user = req.user
+    let userId = user.id
+    return this.postService.setCommentPost(userId,postId,text)
   }
  
   @Post("/deletecoment")
   async deletecoment(@Req() req){
     let {postId,idComent} = req.body
-    let userId = req.user
-    return this.postService.deletecoment(Number(userId.id),Number(postId),Number(idComent))
+    let user = req.user
+    let userId = user.id
+    return this.postService.deleteCommentPost(userId,postId,idComent)
   }
 
 
   @Post("/createpost")
   async createpost(@Req() req){
     let {text,title} = req.body
-    let userId = req.user
-    let post = this.postService.create(text,title,userId.id)
+    let user = req.user
+    let userId = user.id
+    let post = this.postService.createPost(userId,text,title)
     return post
   }
 
   @Post("/editpost")
   async editpost(@Req() req){
     let {text,title,postId} = req.body
-    let userId = req.user
-    let post = this.postService.edit(text,title,Number(userId.id),Number(postId))
+    let user = req.user
+    let userId = user.id
+    let post = this.postService.editPost(userId,postId,text,title)
     return post
   }
 
   @Post("/deletepost")
   async deletepost(@Req() req){
     let {postId} = req.body
-    let userId = req.user
-    let post = this.postService.deletepost(Number(userId.id),Number(postId))
+    let user = req.user
+    let userId = user.id
+    let post = this.postService.deletePost(userId,postId)
     return post
   }
 }

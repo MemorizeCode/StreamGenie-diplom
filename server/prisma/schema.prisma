@@ -17,21 +17,16 @@ model User {
   password    String
   uniqLogin   String?
   channelName String?
-  email       String?
-  ipAdr       String?
-  country     String?
-  city        String?
-  browser     String?
   role        Roles         @default(USER)
   countPost   Int           @default(0)
   countVideo  Int           @default(0)
   countWatch  Int           @default(0)
   countSubs   Int           @default(0)
   countMySubs Int           @default(0)
-  isOnline    Boolean       @default(false)
-  premium     Boolean       @default(false)
-  delete      Boolean       @default(false)
-  bans        Boolean       @default(false)
+  isOnline    TorF          @default(FALSE)
+  premium     TorF          @default(FALSE)
+  delete      TorF          @default(FALSE)
+  bans        TorF          @default(FALSE)
   post        Post[]
   likes       LikePost[]
   coment      ComentPost[]
@@ -41,8 +36,8 @@ model User {
   videoL      LikeVideo[]
   videoC      ComentVideo[]
   files       Files[]
-  myBanUser   Bans[]        @relation("banUserId")
-  iBanUser    Bans[]        @relation("userIDS")
+  BanUsers    Bans[]        @relation("userBanId")
+  IbanUsers   Bans[]        @relation("userId")
 }
 
 //MY Subcribe / SUBS
@@ -52,14 +47,6 @@ model Subcribe {
   userId Int
   sub    User @relation("subId", fields: [subId], references: [id])
   subId  Int
-}
-
-model Bans {
-  id        Int  @id @default(autoincrement())
-  user      User @relation("userIDS", fields: [userId], references: [id])
-  userId    Int
-  ban       User @relation("banUserId", fields: [userBanId], references: [id])
-  userBanId Int
 }
 
 //POST
@@ -76,6 +63,14 @@ model Post {
   delete      Boolean      @default(false)
   likes       LikePost[]
   coment      ComentPost[]
+}
+
+model Bans {
+  id        Int  @id @default(autoincrement())
+  user      User @relation("userId", fields: [userId], references: [id])
+  userId    Int
+  banUser   User @relation("userBanId", fields: [banUserId], references: [id])
+  banUserId Int
 }
 
 //LIKE POST
@@ -151,4 +146,9 @@ enum Roles {
   USER
   ADMIN
   MODERATOR
+}
+
+enum TorF {
+  TRUE
+  FALSE
 }
