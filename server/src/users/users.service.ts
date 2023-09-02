@@ -1,18 +1,14 @@
 import { HttpCode, Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
-import { userMessage } from 'src/interface/user.interface';
 import { PrismaService } from 'src/prisma.service';
-import { JwtService } from '@nestjs/jwt';
-import { generateUniqueLogin } from 'src/service/generateUniqueLogin';
-import axios from 'axios';
 @Injectable()
 export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
-    private jwtService: JwtService,
   ) {}
+
   //Получение на кого я подписан
-  async mysubs(id: number):Promise<any> {
+  async mysubs(id: number){
+    //Выбираем юзеров, на которых я подписан
     let subs = await this.prisma.user.findMany({
       where:{
         mypodpiski:{
@@ -20,17 +16,24 @@ export class UsersService {
             userId:id
           }
         }
+      },
+      select:{
+        channelName:true,
+        isOnline:true
       }
     })
-    if(subs.length < 1){
-      return "Пользователь не найден"
+    //Если массив подписок пустой
+    if(!subs.length){
+      return {message:"Пользователи не найдены"}
     }
+    //Иначе выводим подписки в массиве
     else{
       return subs
     }
   }
   //Получение кто на меня подписан
-  async mysubcribe(id: number):Promise<any> {
+  async mysubcribe(id: number) {
+    //Выбираем юзеров,  которые  подписаны на меня
     let podpishki = await this.prisma.user.findMany({
       where:{
         myfolowers:{
@@ -40,16 +43,19 @@ export class UsersService {
         }
       }
     })
-    if(podpishki.length < 1){
-      return "Пользователь не найден"
+    //Иначе выводим подписчиков в массиве
+    if(!podpishki.length){
+      return {message:"Пользователи не найдены"}
     }
+    //Иначе выводим подписчиков в массиве
     else{
       return podpishki
     }
   }
 
   //My profile
-  async profile(id):Promise<userMessage> {
+  async profile(id:number) {
+    //Находим профиль с определенным id
     let result = await this.prisma.user.findUnique({
       where: {
         id: id,
@@ -57,7 +63,6 @@ export class UsersService {
       select: {
         login: true,
         premium: true,
-        email: true,
         countPost: true,
         countVideo: true,
         countWatch: true,
@@ -65,10 +70,19 @@ export class UsersService {
         uniqLogin: true,
       },
     });
-    return {obj:result}
+
+    //Если ответ пуст (ЧТО БЫТЬ НЕ МОЖЕТ, ВОЗМОЖНО, но на всякий случай берем)
+    if(result){
+      return result
+    }
+    //Выводим
+    else{
+      return {message:"Такого id нет"}
+    }
   }
 
-  async profilehyjoi(id):Promise<userMessage> {
+  async neMoyProfile(id:number){
+    //Ищем пользователя по id
     let result = await this.prisma.user.findUnique({
       where: {
         id: id,
@@ -78,60 +92,14 @@ export class UsersService {
         premium: true,
       },
     });
-    return {obj:result}
-  }
 
-  async banuser(userId,myId):Promise<any>{
-    let userIsBan = await this.prisma.bans.findMany({
-      where:{
-        userBanId:userId
-      }
-    })
-    if(userIsBan.length > 0){
-      return "Он уже забанен"
+    //Если юзера нет выводим
+    if(!result){
+      return {message:"Пользователь не найден"}
     }
+    //Иначе
     else{
-      let banUser = await this.prisma.bans.create({
-        data:{
-          userBanId:userId,
-          userId:myId
-        }
-      })
-      return banUser
+      return result
     }
   }
-
-  async unbanuser(userId,myId):Promise<any>{
-    let userIsBan = await this.prisma.bans.findMany({
-      where:{
-        userBanId:userId
-      }
-    })
-    if(userIsBan.length <= 0){
-      return "Он не забанен"
-    }
-    else{
-      let unBanUser = await this.prisma.bans.deleteMany({
-        where:{
-          userBanId:userId,
-          userId:myId
-        }
-      })
-      return unBanUser
-    }
-  }
-
-  async listban(id){
-    let list = await this.prisma.user.findMany({
-      where:{
-        myBanUser:{
-          some:{
-            userId:id
-          }
-        }
-      }
-    })
-    return list
-  }
-
 }

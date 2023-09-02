@@ -13,7 +13,7 @@ export class AuthMiddleware implements NestMiddleware {
     const token = header.split(' ')[1];
     try {
       const decode = await this.jwtService.verify(token);
-      req.body = decode;
+      req.user = decode;
       next();
     } catch (err) {
       return res.status(401).send({ message: 'Неверный токен' });
