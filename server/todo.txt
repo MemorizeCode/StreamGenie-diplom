@@ -47,3 +47,6 @@
 -- Profile description up to 500 characters
 -- the ability to upload GIFs to the avatar
 --
+
+
+--Room

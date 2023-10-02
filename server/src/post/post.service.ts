@@ -5,22 +5,58 @@ import { PrismaService } from 'src/prisma.service';
 export class PostService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllPostUser(userId: number) {
+  async rec(){
+    let randomId = await this.prisma.post.findMany({
+      select:{
+        text:true,
+        title:true
+      },
+      take:10
+    })
+
+    return randomId
+
+  }
+
+
+  async getallpost(userId){
     let postsAndUser = await this.prisma.user.findUnique({
       where: {
         id: userId,
       },
+      select:{
+        login:true,
+        uniqLogin:true,
+        post:{
+          select:{
+            title:true,
+            text:true
+          }
+        }
+      }
+    });
+    return postsAndUser
+  }
+
+
+  async getAllPostUser(userId: number) {
+    const subscribedSubs = await this.prisma.subcribe.findMany({
+      where: {
+        userId: userId,
+      },
       select: {
-        login: true,
-        post: {
-          select: {
-            text: true,
-            title: true,
-          },
+        subId: true,
+      },
+    });
+    
+  const posts = await this.prisma.post.findMany({
+      where: {
+        userId: {
+          in: subscribedSubs.map((s) => s.subId),
         },
       },
     });
-    return postsAndUser;
+    return posts;
   }
 
   async getCurrentPost(id: number) {
@@ -40,7 +76,7 @@ export class PostService {
       },
     });
     if (!currentPost) {
-      return 'Пост не найден. Возможно он был';
+      return 'Пост не найден. Возможно он был, а возможо и нет';
     }
     //Прибавляем +1 просмотр к посту
     let upDateWatchPost = await this.prisma.post.update({
