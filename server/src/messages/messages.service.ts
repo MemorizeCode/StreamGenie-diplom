@@ -40,7 +40,7 @@ export class MessagesService {
       }
     })
     if(accsessRoom.length == 0){
-      return {message:"Доступ запрещен"}
+      return {message:"Вам Доступ запрещен"}
     }
     else{
       let message = await this.prisma.message.findMany({
