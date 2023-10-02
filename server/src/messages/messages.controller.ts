@@ -18,7 +18,8 @@ export class MessagesController {
     let {roomId,text} = req.body
     let userId = req.user
     let result = await this.messagesService.sendmessages(Number(roomId),text,userId.id)
-    return result
+    return result 
+    
   }
 
   //Удалить сообщение
