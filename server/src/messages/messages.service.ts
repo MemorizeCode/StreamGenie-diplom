@@ -29,6 +29,8 @@ export class MessagesService {
     return newMessages;
   }
 
+
+
   async getMessages(roomId,userId) {
     //Есть ли мы в этом чате
     let accsessRoom = await this.prisma.accessRoom.findMany({
