@@ -15,7 +15,6 @@ export class MessagesController {
   //Отправить сообщение
   @Post("/sendmessages")
   async sendmessages(@Req() req, @Headers('api') apikey){
-    return apikey
     let {roomId,text} = req.body
     let userId = req.user
     let result = await this.messagesService.sendmessages(Number(roomId),text,userId.id)
