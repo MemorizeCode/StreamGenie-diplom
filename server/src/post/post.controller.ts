@@ -5,7 +5,23 @@ import { PostService } from './post.service';
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-  @Post('/getposts')
+
+  @Post('/recpost')
+  //Рекомендации
+  async rec(){
+    let post = this.postService.rec()
+    return post
+  }
+
+  @Post("/getallpost")
+  async getallpsot(@Req() req){
+    let {userId} = req.body
+    let post = this.postService.getallpost(Number(userId))
+    return post
+  }
+
+  @Post('/getpostsSubs') //HEADER
+  //Получить посты только на тех на которыхзх подписан
   async getposts(@Req() req) {
     let {userId} = req.body
     let post = this.postService.getAllPostUser(userId)

@@ -38,6 +38,32 @@ model User {
   files       Files[]
   BanUsers    Bans[]        @relation("userBanId")
   IbanUsers   Bans[]        @relation("userId")
+  Messages    Message[]
+  accsessRoom AccessRoom[]    
+}
+
+model Room {
+  id       Int       @id @default(autoincrement())
+  messages Message[] 
+  accsessRoom AccessRoom[]    
+}
+
+model AccessRoom {
+  id       Int       @id @default(autoincrement())
+  room Room @relation(fields: [roomId],references: [id])
+  roomId Int
+  user User @relation(fields: [userId],references: [id])
+  userId Int
+}
+
+
+model Message {
+  id     Int    @id @default(autoincrement())
+  text   String
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+  room   Room   @relation(fields: [roomId], references: [id])
+  roomId Int
 }
 
 //MY Subcribe / SUBS

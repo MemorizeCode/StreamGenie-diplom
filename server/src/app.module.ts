@@ -5,10 +5,11 @@ import { AuthModule } from './auth/auth.module';
 import { PostModule } from './post/post.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { UsersModule } from './users/users.module';
+import { MessagesModule } from './messages/messages.module';
 
 
 @Module({
-  imports: [AuthModule, PostModule, UsersModule],
+  imports: [AuthModule, PostModule, UsersModule, MessagesModule],
   controllers: [AppController],
   providers: [AppService],
 })
@@ -22,6 +23,9 @@ export class AppModule implements NestModule{
       {path:"/api/post/createpost", method:RequestMethod.ALL},
       {path:"/api/post/editpost", method:RequestMethod.ALL},
       {path:"/api/post/deletepost", method:RequestMethod.ALL},
+      {path:"/api/messages/sendmessages", method:RequestMethod.ALL},
+      {path:"/api/messages/deletemessages", method:RequestMethod.ALL},
+      {path:"/api/messages/getmessages/:roomId", method:RequestMethod.ALL},
     )
   }
 }
