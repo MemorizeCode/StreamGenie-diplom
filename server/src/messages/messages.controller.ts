@@ -19,7 +19,6 @@ export class MessagesController {
     let userId = req.user
     let result = await this.messagesService.sendmessages(Number(roomId),text,userId.id)
     return result 
-    
   }
 
   //Удалить сообщение
